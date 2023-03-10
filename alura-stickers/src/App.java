@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -15,6 +16,7 @@ public class App {
 
         // fazer uma conexão HTTP e buscar os top 250 filmes
         String url = "https://imdb-api.com/en/API/Top250Movies/k_x3pev8lm";
+        // String url = "https://imdb-api.com/en/API/MostPopularMovies/k_x3pev8lm";
         URI endereco = URI.create(url);
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(endereco).GET().build();
@@ -34,12 +36,24 @@ public class App {
             var filme = listaDeFilmes.get(index);
             
             String urlImagem = filme.get("image");
+            String urlImagemMaior = urlImagem.replaceFirst("(@?\\.)([0-9A-Z,_]+).jpg$", "$1.jpg");
             String titulo = filme.get("title");
+            double classificacao = Double.parseDouble(filme.get("imDbRating"));
 
-            InputStream inputStream = new URL(urlImagem).openStream();
+            String textoFigurinha;
+            InputStream imagemPaulo;
+            if (classificacao >= 8.0) {
+                textoFigurinha = "TOPZERA";
+                imagemPaulo = new FileInputStream(new File("sobreposicao/paulo-empolgadao.jpg"));
+            } else {
+                textoFigurinha = "HMMMMMM...";
+                imagemPaulo = new FileInputStream(new File("sobreposicao/paulo-desconfiado.png"));
+            }
+
+            InputStream inputStream = new URL(urlImagemMaior).openStream();
             String nomeArquivo = "figurinhas/" + titulo + ".png";
 
-            geradora.cria(inputStream, nomeArquivo);
+            geradora.cria(inputStream, nomeArquivo, textoFigurinha, imagemPaulo);
 
             System.out.println(titulo);
             System.out.println();
