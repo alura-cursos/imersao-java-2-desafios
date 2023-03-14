@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,9 +29,9 @@ public class LinguagemController {
     }
 
     @PostMapping("/linguagens")
-    public Linguagem cadastrarLinguagem(@RequestBody Linguagem linguagem) {
+    public ResponseEntity<Linguagem> cadastrarLinguagem(@RequestBody Linguagem linguagem) {
         Linguagem linguagemSalva = repositorio.save(linguagem);
-        return linguagemSalva;
+        return new ResponseEntity<>(linguagemSalva, HttpStatus.CREATED);
     }
 
     @GetMapping("/linguagens/{id}")
